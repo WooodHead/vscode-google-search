@@ -1,9 +1,9 @@
 # Demo
-![demo.gif](https://raw.githubusercontent.com/WooodHead/vscode-html-to-react/master/demo.gif)
+![demo.gif](https://raw.githubusercontent.com/WooodHead/vscode-google-search/main/demo.gif)
 
 # Install
-https://marketplace.visualstudio.com/items?itemName=WooodHead.html-to-react
+https://marketplace.visualstudio.com/items?itemName=WooodHead.vscode-google-search
 
 # Source code
 
-https://github.com/WooodHead/vscode-html-to-react
+https://github.com/WooodHead/vscode-google-search
