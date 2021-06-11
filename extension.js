@@ -25,10 +25,18 @@ function activate (context) {
     'extension.googleSearchWithKeywordsSaved',
     webSearchWithWeywordsSaved.bind(this, context)
   );
+
+  const disposable5 = vscode.commands.registerTextEditorCommand(
+    'extension.googleSearchAllWithKeywords',
+    webSearchAllWithWeywords.bind(this, context)
+  );
   context.subscriptions.push(disposable1);
   context.subscriptions.push(disposable2);
   context.subscriptions.push(disposable3);
   context.subscriptions.push(disposable4);
+  context.subscriptions.push(disposable5);
+
+
 }
 exports.activate = activate;
 
@@ -94,6 +102,52 @@ function webSearchWithWeywords (ctx) {
       const queryTemplate = googleSearchCfg.get(CONF_KEY);
       const query = queryTemplate.replace("%SELECTION%", uriText);
       vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(query));
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+
+
+function webSearchAllWithWeywords (ctx) {
+  const selectedText = getSelectedText();
+  if (!selectedText) {
+    return;
+  }
+  const LanguageMapping = {
+    typescript: 'javascript',
+    less: 'css',
+    sass: 'css',
+    scss: 'css',
+  }
+
+  var editor = vscode.window.activeTextEditor;
+
+  const languageId = vscode.window.activeTextEditor.document.languageId;
+  const language = LanguageMapping[languageId] || languageId;
+  const lastInput = ctx.globalState.get("lastInput", "") || language
+
+  var selection = editor.selection;
+  var text = editor.document.getText(selection);
+  var lines = text.split('\n')
+
+  showInputBox(selectedText, lastInput)
+    .then((text) => {
+      function escapeRegExp (text) {
+        return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+      }
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        const regex = new RegExp(`^${escapeRegExp(line)} `)
+        ctx.globalState.update("lastInput", text.replace(regex, ''));
+        const uriText = encodeURI(`${text}`);
+        const googleSearchCfg = vscode.workspace.getConfiguration(EXT_NAME);
+        const queryTemplate = googleSearchCfg.get(CONF_KEY);
+        const query = queryTemplate.replace("%SELECTION%", uriText);
+        vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(query));
+      }
+
     })
     .catch(error => {
       console.error(error);
