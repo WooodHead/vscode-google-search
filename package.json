@@ -2,7 +2,7 @@
   "name": "google-search",
   "displayName": "google-search",
   "description": "Google search",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "WooodHead",
   "engines": {
     "vscode": "^1.31.0"
